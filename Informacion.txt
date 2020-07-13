@@ -1,0 +1,3 @@
+-ApliClaves-AllBD
+	v1.0 Iniciación del proyecto
+	v1.1 Implementación de las clases para el Funcionamiento

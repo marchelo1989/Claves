@@ -5,6 +5,12 @@
  */
 package Cl.Burgos.Claves.Main;
 
+import Cl.Burgos.Claves.Conf.Confi;
+import Cl.Burgos.Claves.FUN.Directorio;
+import Cl.Burgos.Claves.GUI.FrLogin;
+import java.io.File;
+import org.apache.log4j.PropertyConfigurator;
+
 /**
  *
  * @author march
@@ -16,6 +22,13 @@ public class ApliClavesAllBD {
      */
     public static void main(String[] args) {
         // TODO code application logic here
+        File log4jfile = new File(Confi.userProgra+"/Log4j.properties");
+        PropertyConfigurator.configure(log4jfile.getAbsolutePath());
+    
+        Directorio.crearDirecPre();
+        Directorio.crearDirecSec();
+        FrLogin frLogin = new FrLogin();
+        frLogin.setVisible(true);
     }
     
 }
