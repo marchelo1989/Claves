@@ -1,3 +1,9 @@
 -ApliClaves-AllBD
 	v1.0 Iniciación del proyecto
 	v1.1 Implementación de las clases para el Funcionamiento
+
+-ApliClaves-MySQL
+	v1.0 Iniciación del proyecto
+
+-localHost
+	v1.0 Envios de Mail Claves

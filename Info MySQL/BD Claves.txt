@@ -1,0 +1,508 @@
+-- MySQL Workbench Forward Engineering
+
+SET @OLD_UNIQUE_CHECKS=@@UNIQUE_CHECKS, UNIQUE_CHECKS=0;
+SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0;
+SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='TRADITIONAL,ALLOW_INVALID_DATES';
+
+-- -----------------------------------------------------
+-- Schema Claves
+-- -----------------------------------------------------
+
+-- -----------------------------------------------------
+-- Schema Claves
+-- -----------------------------------------------------
+CREATE SCHEMA IF NOT EXISTS `Claves` DEFAULT CHARACTER SET latin1 ;
+USE `Claves` ;
+
+-- -----------------------------------------------------
+-- Table `Claves`.`Login`
+-- -----------------------------------------------------
+DROP TABLE IF EXISTS `Claves`.`Login` ;
+
+CREATE TABLE IF NOT EXISTS `Claves`.`Login` (
+  `idLogin` INT(11) NOT NULL AUTO_INCREMENT,
+  `rut` VARCHAR(13) NOT NULL,
+  `nombre` VARCHAR(25) NOT NULL,
+  `apellido` VARCHAR(25) NULL,
+  `correo` VARCHAR(45) NOT NULL,
+  `password` VARCHAR(45) NOT NULL,
+  `preguntaSecreta` VARCHAR(45) NOT NULL,
+  `respuestaSecreta` VARCHAR(45) NOT NULL,
+  `claveSecreta` VARCHAR(45) NULL,
+  `cambioPass` VARCHAR(11) NULL,
+  PRIMARY KEY (`idLogin`))
+ENGINE = InnoDB
+DEFAULT CHARACTER SET = latin1;
+
+
+-- -----------------------------------------------------
+-- Table `Claves`.`Claves`
+-- -----------------------------------------------------
+DROP TABLE IF EXISTS `Claves`.`Claves` ;
+
+CREATE TABLE IF NOT EXISTS `Claves`.`Claves` (
+  `idClaves` INT(11) NOT NULL AUTO_INCREMENT,
+  `nombre` VARCHAR(25) NOT NULL,
+  `pag` VARCHAR(45) NOT NULL,
+  `usuario` VARCHAR(45) NOT NULL,
+  `pass` VARCHAR(45) NOT NULL,
+  `fechaInert` DATETIME NOT NULL,
+  `fechaUpdate` DATETIME NULL,
+  `idLogin` INT(11) NOT NULL,
+  PRIMARY KEY (`idClaves`))
+ENGINE = InnoDB
+DEFAULT CHARACTER SET = latin1;
+
+
+-- -----------------------------------------------------
+-- Table `Claves`.`AudiLogin`
+-- -----------------------------------------------------
+DROP TABLE IF EXISTS `Claves`.`AudiLogin` ;
+
+CREATE TABLE IF NOT EXISTS `Claves`.`AudiLogin` (
+  `idAudiLogin` INT NULL AUTO_INCREMENT,
+  `rut` VARCHAR(12) NULL,
+  `nombre` VARCHAR(25) NULL,
+  `apellido` VARCHAR(25) NULL,
+  `correo` VARCHAR(45) NULL,
+  `password` VARCHAR(45) NULL,
+  `preguntaSecreta` VARCHAR(45) NULL,
+  `respuestaSecreta` VARCHAR(45) NULL,
+  `claveSecreta` VARCHAR(45) NULL,
+  `fecha` DATETIME NULL,
+  `proceso` VARCHAR(25) NULL,
+  `usuario_bd` VARCHAR(25) NULL,
+  `Login_idLogin` INT NULL,
+  PRIMARY KEY (`idAudiLogin`))
+ENGINE = InnoDB;
+
+
+-- -----------------------------------------------------
+-- Table `Claves`.`AudiClaves`
+-- -----------------------------------------------------
+DROP TABLE IF EXISTS `Claves`.`AudiClaves` ;
+
+CREATE TABLE IF NOT EXISTS `Claves`.`AudiClaves` (
+  `idAudiClaves` INT NOT NULL AUTO_INCREMENT,
+  `nombre` VARCHAR(25) NULL,
+  `pag` VARCHAR(45) NULL,
+  `usuario` VARCHAR(45) NULL,
+  `pass` VARCHAR(45) NULL,
+  `fechaInert` DATETIME NULL,
+  `fechaUpdate` DATETIME NULL,
+  `idLogin` INT NULL,
+  `fecha` DATETIME NULL,
+  `proceso` VARCHAR(25) NULL,
+  `usuario_bd` VARCHAR(25) NULL,
+  `idClaves` INT NULL,
+  PRIMARY KEY (`idAudiClaves`))
+ENGINE = InnoDB;
+
+USE `Claves` ;
+
+-- -----------------------------------------------------
+-- procedure ProLoginValidar
+-- -----------------------------------------------------
+
+USE `Claves`;
+DROP procedure IF EXISTS `Claves`.`ProLoginValidar`;
+
+DELIMITER $$
+USE `Claves`$$
+CREATE PROCEDURE `ProLoginValidar` (in digito varchar(12),in Pass varchar(45))
+reads sql data
+BEGIN
+select 
+idLogin,rut,nombre,apellido,correo,password,preguntaSecreta,respuestaSecreta
+from `Login`
+where rut=digito and password=Pass;
+END$$
+
+DELIMITER ;
+
+-- -----------------------------------------------------
+-- procedure ProLoginBuscarRut
+-- -----------------------------------------------------
+
+USE `Claves`;
+DROP procedure IF EXISTS `Claves`.`ProLoginBuscarRut`;
+
+DELIMITER $$
+USE `Claves`$$
+CREATE PROCEDURE `ProLoginBuscarRut` (in Rutl varchar(12))
+reads sql data
+BEGIN
+select 
+idLogin,rut,nombre,apellido,correo,password,preguntaSecreta,respuestaSecreta
+from `Login`
+where rut=Rutl;
+END$$
+
+DELIMITER ;
+
+-- -----------------------------------------------------
+-- procedure ProLoginInsertar
+-- -----------------------------------------------------
+
+USE `Claves`;
+DROP procedure IF EXISTS `Claves`.`ProLoginInsertar`;
+
+DELIMITER $$
+USE `Claves`$$
+CREATE PROCEDURE `ProLoginInsertar` (in Rut varchar(12),in Nombre varchar(25), in Apellido varchar(25),in Correo varchar(45),in Password varchar(45),in PreguntaSecreta varchar(45),in RespuestaSecreta varchar(45))
+BEGIN
+insert into Login(rut,nombre,apellido,correo,password,preguntaSecreta,respuestaSecreta)
+value(Rut,Nombre,Apellido,Correo,Password,PreguntaSecreta,RespuestaSecreta);
+END$$
+
+DELIMITER ;
+
+-- -----------------------------------------------------
+-- procedure ProClavesBuscarIdLogin
+-- -----------------------------------------------------
+
+USE `Claves`;
+DROP procedure IF EXISTS `Claves`.`ProClavesBuscarIdLogin`;
+
+DELIMITER $$
+USE `Claves`$$
+CREATE PROCEDURE `ProClavesBuscarIdLogin` (in ID int)
+reads sql data
+BEGIN
+select idClaves,
+nombre,
+pag,
+usuario,
+pass,
+fechaInert,
+fechaUpdate,
+idLogin
+from
+`Claves`
+where idLogin=ID;
+END$$
+
+DELIMITER ;
+
+-- -----------------------------------------------------
+-- procedure ProClavesCuantos
+-- -----------------------------------------------------
+
+USE `Claves`;
+DROP procedure IF EXISTS `Claves`.`ProClavesCuantos`;
+
+DELIMITER $$
+USE `Claves`$$
+CREATE PROCEDURE `ProClavesCuantos` (in Busqueda varchar(200))
+reads sql data
+deterministic
+BEGIN
+select 
+count(*) as cuantos
+from
+`Claves`
+where
+nombre like concat('%',Busqueda,'%') or pag like concat('%',Busqueda,'%') or usuario like concat('%',Busqueda,'%') or 
+pass like concat('%',Busqueda,'%') or fechaInert like concat('%',Busqueda,'%') or fechaUpdate like concat('%',Busqueda,'%') 
+or idLogin like concat('%',Busqueda,'%') ;
+END$$
+
+DELIMITER ;
+
+-- -----------------------------------------------------
+-- procedure ProClavesInsertar
+-- -----------------------------------------------------
+
+USE `Claves`;
+DROP procedure IF EXISTS `Claves`.`ProClavesInsertar`;
+
+DELIMITER $$
+USE `Claves`$$
+CREATE PROCEDURE `ProClavesInsertar` (in Nombre varchar(12),in Pagina varchar(45), in Usuario varchar(45),in Passworld varchar(45),in IdLogin int)
+BEGIN
+insert into claves(nombre,pag,usuario,pass,fechaInert,fechaUpdate,idLogin)
+value(Nombre,Pagina,Usuario,Passworld,NOW(),NOW(),IdLogin);
+END$$
+
+DELIMITER ;
+
+-- -----------------------------------------------------
+-- procedure ProClavesBuscarID
+-- -----------------------------------------------------
+
+USE `Claves`;
+DROP procedure IF EXISTS `Claves`.`ProClavesBuscarID`;
+
+DELIMITER $$
+USE `Claves`$$
+CREATE PROCEDURE `ProClavesBuscarID` (in id bigint)
+reads sql data
+BEGIN
+select right(idClaves, 5) as idClaves,
+nombre,
+pag,
+usuario,
+pass,
+fechaInert,
+fechaUpdate,
+idLogin
+from
+`claves`
+where idClaves=id;
+END$$
+
+DELIMITER ;
+
+-- -----------------------------------------------------
+-- procedure ProClavesModificar
+-- -----------------------------------------------------
+
+USE `Claves`;
+DROP procedure IF EXISTS `Claves`.`ProClavesModificar`;
+
+DELIMITER $$
+USE `Claves`$$
+CREATE PROCEDURE `ProClavesModificar` (in Nombre varchar(25),in Pagina varchar(45), in Usuario varchar(45),in Passworld varchar(45),in IdLogin int,in id int)
+BEGIN
+update
+`Claves`
+set
+nombre=Nombre,
+pag=Pagina,
+usuario=Usuario,
+pass=Passworld,
+fechaUpdate=NOW(),
+idLogin=IdLogin
+WHERE 
+idClaves=id;
+END$$
+
+DELIMITER ;
+
+-- -----------------------------------------------------
+-- procedure ProClavesEliminar
+-- -----------------------------------------------------
+
+USE `Claves`;
+DROP procedure IF EXISTS `Claves`.`ProClavesEliminar`;
+
+DELIMITER $$
+USE `Claves`$$
+CREATE PROCEDURE `ProClavesEliminar` (in id int)
+BEGIN
+delete
+from
+`Claves`
+WHERE 
+idClaves=id;
+END$$
+
+DELIMITER ;
+
+-- -----------------------------------------------------
+-- procedure ProLoginValidarCuenta
+-- -----------------------------------------------------
+
+USE `Claves`;
+DROP procedure IF EXISTS `Claves`.`ProLoginValidarCuenta`;
+
+DELIMITER $$
+USE `Claves`$$
+CREATE PROCEDURE `ProLoginValidarCuenta` (in digito varchar(12),in mail varchar(45),in RespSecre varchar(45))
+reads sql data
+BEGIN
+select idLogin, rut, nombre, apellido, correo, password, preguntaSecreta, respuestaSecreta, claveSecreta 
+from login 
+where rut=digito and correo=Correo and respuestaSecreta=RespSecre;
+END$$
+
+DELIMITER ;
+
+-- -----------------------------------------------------
+-- procedure ProLoginUpdateSolicitud
+-- -----------------------------------------------------
+
+USE `Claves`;
+DROP procedure IF EXISTS `Claves`.`ProLoginUpdateSolicitud`;
+
+DELIMITER $$
+USE `Claves`$$
+CREATE PROCEDURE `ProLoginUpdateSolicitud` (in Rut1 varchar(12))
+BEGIN
+update 
+login 
+set cambioPass='si'
+WHERE rut=Rut1;
+END$$
+
+DELIMITER ;
+
+-- -----------------------------------------------------
+-- procedure ProLoginCambioPass
+-- -----------------------------------------------------
+
+USE `Claves`;
+DROP procedure IF EXISTS `Claves`.`ProLoginCambioPass`;
+
+DELIMITER $$
+USE `Claves`$$
+CREATE PROCEDURE `ProLoginCambioPass` (in digito varchar(12),in Pass varchar(45))
+BEGIN
+update 
+login 
+set password=Pass, claveSecreta=null ,cambioPass=null
+WHERE rut=digito;
+END$$
+
+DELIMITER ;
+
+-- -----------------------------------------------------
+-- procedure ProLoginActualizar
+-- -----------------------------------------------------
+
+USE `Claves`;
+DROP procedure IF EXISTS `Claves`.`ProLoginActualizar`;
+
+DELIMITER $$
+USE `Claves`$$
+CREATE PROCEDURE `ProLoginActualizar` (in Rut1 varchar(12),in Nombre varchar(25), in Apellido varchar(25),in Correo varchar(45),in PreguntaSecreta varchar(45),in RespuestaSecreta varchar(45))
+BEGIN
+update 
+login 
+set 
+nombre=Nombre,
+apellido=Apellido,
+correo=Correo,
+preguntaSecreta=PreguntaSecreta,respuestaSecreta=RespuestaSecreta 
+WHERE rut=Rut1;
+END$$
+
+DELIMITER ;
+USE `Claves`;
+
+DELIMITER $$
+
+USE `Claves`$$
+DROP TRIGGER IF EXISTS `Claves`.`insertAudiL` $$
+USE `Claves`$$
+CREATE DEFINER = CURRENT_USER TRIGGER `Claves`.`insertAudiL` AFTER INSERT ON `Login` FOR EACH ROW
+BEGIN
+INSERT
+INTO
+AudiLogin(rut, nombre, apellido, correo, password, preguntaSecreta, respuestaSecreta, claveSecreta, fecha, proceso, usuario_bd, Login_idlogin)
+value(new.rut, new.nombre, new.apellido, new.correo, new.password, new.preguntaSecreta, new.respuestaSecreta, new.claveSecreta, NOW(), "Insertado", CURRENT_USER(), new.idLogin);
+END$$
+
+
+USE `Claves`$$
+DROP TRIGGER IF EXISTS `Claves`.`updateAudiL` $$
+USE `Claves`$$
+CREATE DEFINER = CURRENT_USER TRIGGER `Claves`.`updateAudiL` AFTER UPDATE ON `Login` FOR EACH ROW
+BEGIN
+INSERT
+INTO
+AudiLogin(rut, nombre, apellido, correo, password, preguntaSecreta, respuestaSecreta, claveSecreta, fecha, proceso, usuario_bd, Login_idlogin)
+value(new.rut, new.nombre, new.apellido, new.correo, new.password, new.preguntaSecreta, new.respuestaSecreta, new.claveSecreta, NOW(), "Modificado", CURRENT_USER(), new.idLogin);
+END$$
+
+
+USE `Claves`$$
+DROP TRIGGER IF EXISTS `Claves`.`deleteAudiL` $$
+USE `Claves`$$
+CREATE DEFINER = CURRENT_USER TRIGGER `Claves`.`deleteAudiL` AFTER DELETE ON `Login` FOR EACH ROW
+BEGIN
+INSERT
+INTO
+AudiLogin(rut, nombre, apellido, correo, password, preguntaSecreta, respuestaSecreta, claveSecreta, fecha, proceso, usuario_bd, Login_idlogin)
+value(old.rut, old.nombre, old.apellido, old.correo, old.password, old.preguntaSecreta, old.respuestaSecreta, old.claveSecreta, NOW(), "Eliminado", CURRENT_USER(), old.idLogin);
+END$$
+
+
+USE `Claves`$$
+DROP TRIGGER IF EXISTS `Claves`.`insertAudiC` $$
+USE `Claves`$$
+CREATE DEFINER = CURRENT_USER TRIGGER `Claves`.`insertAudiC` AFTER INSERT ON `Claves` FOR EACH ROW
+BEGIN
+INSERT
+INTO
+AudiClaves(nombre, pag, usuario, pass, fechaInert, fechaUpdate, idLogin, fecha, proceso, usuario_bd, idClaves)
+value(new.nombre, new.pag, new.usuario, new.pass, new.fechaInert, new.fechaUpdate, new.idLogin, NOW(), "Insertado", CURRENT_USER(), new.idClaves);
+END$$
+
+
+USE `Claves`$$
+DROP TRIGGER IF EXISTS `Claves`.`updateAudiC` $$
+USE `Claves`$$
+CREATE DEFINER = CURRENT_USER TRIGGER `Claves`.`updateAudiC` AFTER UPDATE ON `Claves` FOR EACH ROW
+BEGIN
+INSERT
+INTO
+AudiClaves(nombre, pag, usuario, pass, fechaInert, fechaUpdate, idLogin, fecha, proceso, usuario_bd, idClaves)
+value(new.nombre, new.pag, new.usuario, new.pass, new.fechaInert, new.fechaUpdate, new.idLogin, NOW(), "Modificado", CURRENT_USER(), new.idClaves);
+END$$
+
+
+USE `Claves`$$
+DROP TRIGGER IF EXISTS `Claves`.`deleteAudiC` $$
+USE `Claves`$$
+CREATE DEFINER = CURRENT_USER TRIGGER `Claves`.`deleteAudiC` AFTER DELETE ON `Claves` FOR EACH ROW
+BEGIN
+INSERT
+INTO
+AudiClaves(nombre, pag, usuario, pass, fechaInert, fechaUpdate, idLogin, fecha, proceso, usuario_bd, idClaves)
+value(old.nombre, old.pag, old.usuario, old.pass, old.fechaInert, old.fechaUpdate, old.idLogin, NOW(), "Eliminado", CURRENT_USER(), old.idClaves);
+END$$
+
+
+DELIMITER ;
+SET SQL_MODE = '';
+GRANT USAGE ON *.* TO marchelo@localhost;
+ DROP USER marchelo@localhost;
+SET SQL_MODE='TRADITIONAL,ALLOW_INVALID_DATES';
+CREATE USER 'marchelo'@'localhost' IDENTIFIED BY 'HP2117la';
+
+GRANT SELECT ON TABLE `Claves`.* TO 'marchelo'@'localhost';
+GRANT SELECT, INSERT, TRIGGER ON TABLE `Claves`.* TO 'marchelo'@'localhost';
+GRANT ALL ON `Claves`.* TO 'marchelo'@'localhost';
+GRANT SELECT, INSERT, TRIGGER, UPDATE, DELETE ON TABLE `Claves`.* TO 'marchelo'@'localhost';
+
+SET SQL_MODE=@OLD_SQL_MODE;
+SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS;
+SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS;
+
+-- -----------------------------------------------------
+-- Data for table `Claves`.`Login`
+-- -----------------------------------------------------
+START TRANSACTION;
+USE `Claves`;
+INSERT INTO `Claves`.`Login` (`idLogin`, `rut`, `nombre`, `apellido`, `correo`, `password`, `preguntaSecreta`, `respuestaSecreta`, `claveSecreta`, `cambioPass`) VALUES (1, '17.008.864-6', 'Marcelo', 'Burgos', 'marchelo.1989@live.cl', '729c35493e6b8e990aaaddc2a52d02c1', 'Color favorito', 'azul', NULL, NULL);
+INSERT INTO `Claves`.`Login` (`idLogin`, `rut`, `nombre`, `apellido`, `correo`, `password`, `preguntaSecreta`, `respuestaSecreta`, `claveSecreta`, `cambioPass`) VALUES (2, '21.185.681-5', 'Tihare', NULL, 'Prueba@prueba.cl', '31c1aa721d80de4a819b9f019c71b36b', 'Pregunta', 'Respuesta', NULL, NULL);
+INSERT INTO `Claves`.`Login` (`idLogin`, `rut`, `nombre`, `apellido`, `correo`, `password`, `preguntaSecreta`, `respuestaSecreta`, `claveSecreta`, `cambioPass`) VALUES (3, '16.472.302-k', 'Romina', 'Peñafiel', 'Rommy_andrea@hotmail.com', '9d044836e52b23b272b86330f9b210d8', 'Pregunta', 'Respuesta', NULL, NULL);
+INSERT INTO `Claves`.`Login` (`idLogin`, `rut`, `nombre`, `apellido`, `correo`, `password`, `preguntaSecreta`, `respuestaSecreta`, `claveSecreta`, `cambioPass`) VALUES (4, '7.366.253-2', 'Magdalena', 'Lopez', 'lopez.magda@live.com', '0dfd4690a7c1514c438af32530239c66', 'Pregunta', 'Respuesta', NULL, NULL);
+
+COMMIT;
+
+
+-- -----------------------------------------------------
+-- Data for table `Claves`.`Claves`
+-- -----------------------------------------------------
+START TRANSACTION;
+USE `Claves`;
+INSERT INTO `Claves`.`Claves` (`idClaves`, `nombre`, `pag`, `usuario`, `pass`, `fechaInert`, `fechaUpdate`, `idLogin`) VALUES (1, 'Adobe', 'https://www.adobe.com/la/', 'bWFyY2hlbG8uYm1AaG90bWFpbC5jb20', 'SFAyMTE3bGE=', '2019-02-22 15:20:15', '2019-02-22 15:20:15', 1);
+INSERT INTO `Claves`.`Claves` (`idClaves`, `nombre`, `pag`, `usuario`, `pass`, `fechaInert`, `fechaUpdate`, `idLogin`) VALUES (2, 'Adobe 2', 'https://www.adobe.com/la/', 'bWFyY2hlbG8uMTk4OUBsaXZlLmNs', 'SFAyMTE3bGE=', '2019-02-22 15:21:47', '2019-02-22 15:21:47', 1);
+INSERT INTO `Claves`.`Claves` (`idClaves`, `nombre`, `pag`, `usuario`, `pass`, `fechaInert`, `fechaUpdate`, `idLogin`) VALUES (3, 'Blizzard', 'https://us.battle.net/login/es/', 'bWFyY2hlbG8uMTk4OUBsaXZlLmNs', 'aHAyMTE3bGE', '2019-02-22 15:24:26', '2019-02-22 15:24:26', 1);
+INSERT INTO `Claves`.`Claves` (`idClaves`, `nombre`, `pag`, `usuario`, `pass`, `fechaInert`, `fechaUpdate`, `idLogin`) VALUES (4, 'Ticket Junaeb', 'https://www.becaticketjunaeb.cl', 'MTcuMDA4Ljg2NC02', 'SFAyMTE3bGE', '2019-02-22 15:30:10', '2019-02-22 15:35:48', 1);
+INSERT INTO `Claves`.`Claves` (`idClaves`, `nombre`, `pag`, `usuario`, `pass`, `fechaInert`, `fechaUpdate`, `idLogin`) VALUES (5, 'Facebook', 'www.facebook.cl', 'bG9wZXoubWFnZGFAbGl2ZS5jb20', 'NzUzNTYxMThtYWdkYQ', '2019-02-22 18:11:06', '2019-02-22 18:11:06', 4);
+INSERT INTO `Claves`.`Claves` (`idClaves`, `nombre`, `pag`, `usuario`, `pass`, `fechaInert`, `fechaUpdate`, `idLogin`) VALUES (6, 'Cencosud', 'www.tarjetacencosud.cl', 'NzM2NjI1MzI=', 'Mzg1Nw==', '2019-02-22 18:57:15', '2019-02-22 18:57:15', 4);
+INSERT INTO `Claves`.`Claves` (`idClaves`, `nombre`, `pag`, `usuario`, `pass`, `fechaInert`, `fechaUpdate`, `idLogin`) VALUES (7, 'Cuenta rut', 'www.Bancoestado.cl', 'NzM2NjI1MzI=', 'Mzg1N21hZ2Q=', '2019-02-22 19:01:20', '2019-02-22 19:01:20', 4);
+INSERT INTO `Claves`.`Claves` (`idClaves`, `nombre`, `pag`, `usuario`, `pass`, `fechaInert`, `fechaUpdate`, `idLogin`) VALUES (8, 'Facebook', 'www.facebook.com', 'Um9tbXlfYW5kcmVhQGhvdG1haWwuY29t', 'VGhpYXJlNTcyNjMyMTVyb21teQ==', '2019-02-22  22:53:00', '2019-02-23 01:35:24', 3);
+INSERT INTO `Claves`.`Claves` (`idClaves`, `nombre`, `pag`, `usuario`, `pass`, `fechaInert`, `fechaUpdate`, `idLogin`) VALUES (11, 'Facebook2', 'www.facebook.com', 'R2FyZmllbGRjZXJvXzE5ODZAaG90bWFpbC5jb20=', 'VGloYXJlNTcyNjMyMTVyb21teQ==', '2019-02-23 01:33:31', '2019-02-23 02:00:16', 3);
+INSERT INTO `Claves`.`Claves` (`idClaves`, `nombre`, `pag`, `usuario`, `pass`, `fechaInert`, `fechaUpdate`, `idLogin`) VALUES (12, 'Facebook3', 'www.facebook.com', 'R2FyZmllbGRnb2RkZXNzbG92ZUBob3RtYWlsLmNvbQ==', 'VGhpYXJl', '2019-02-23 01:37:29', '2019-03-01 00:58:20', 3);
+INSERT INTO `Claves`.`Claves` (`idClaves`, `nombre`, `pag`, `usuario`, `pass`, `fechaInert`, `fechaUpdate`, `idLogin`) VALUES (13, 'Facebook4', 'www.facebook.com', 'R2FyZmllbGQuZ29kZGVzcy5sb3ZlQGhvdG1haWwuY29t', 'VGhpYXJl', '2019-02-23 01:52:01', '2019-03-01 00:58:44', 3);
+INSERT INTO `Claves`.`Claves` (`idClaves`, `nombre`, `pag`, `usuario`, `pass`, `fechaInert`, `fechaUpdate`, `idLogin`) VALUES (14, 'Facebook5', 'www.facebook.com', 'R2FyZmllbGQzNjZAZ21haWwuY29t', 'NTcyNjMyMTU=', '2019-02-23 02:05:01', '2019-02-23 02:05:01', 3);
+INSERT INTO `Claves`.`Claves` (`idClaves`, `nombre`, `pag`, `usuario`, `pass`, `fechaInert`, `fechaUpdate`, `idLogin`) VALUES (15, 'Outlook', 'www.outlook.com', 'Um9tbXlfYW5kcmVhQGhvdG1haWwuY29t', 'dGhpYXJlMTQ5MTk4Ng==', '2019-02-25 01:08:23', '2019-02-25 01:08:23', 3);
+INSERT INTO `Claves`.`Claves` (`idClaves`, `nombre`, `pag`, `usuario`, `pass`, `fechaInert`, `fechaUpdate`, `idLogin`) VALUES (16, 'Outlook', 'www.outlook.com', 'R2FyZmllbGRjZXJvXzE5ODZAaG90bWFpbC5jb20=', 'dGhpYXJlMTQ5MTk4Ng==', '2019-02-25 01:09:11', '2019-02-25 01:09:11', 3);
+INSERT INTO `Claves`.`Claves` (`idClaves`, `nombre`, `pag`, `usuario`, `pass`, `fechaInert`, `fechaUpdate`, `idLogin`) VALUES (17, 'Outlook', 'www.outlook.com', 'R2FyZmllbGQuZ29kZGVzcy5sb3ZlQGhvdG1haWwuY29t', 'MTQ5MTk4NnJvbW15', '2019-02-25 04:43:27', '2019-02-25 04:43:27', 3);
+
+COMMIT;
+
