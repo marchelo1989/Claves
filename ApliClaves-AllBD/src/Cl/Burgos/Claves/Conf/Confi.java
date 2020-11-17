@@ -63,9 +63,12 @@ public interface Confi {
     static String userDir = System.getProperty("user.home");
     static String userProgra = System.getProperty("user.dir");
         
+    //Configuraciones para Update
+    static String Version = "1.2";
+    static String UrlVersion = "";
+    static String UrlDescarga = "";
+    
     //Prueba Login
-    String loginUsep="170088646";
-    String loginPasp="HP2117";
 //    String loginUsep="111111111";
 //    String loginPasp="admin";
     

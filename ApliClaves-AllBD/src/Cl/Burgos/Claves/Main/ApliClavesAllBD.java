@@ -8,7 +8,11 @@ package Cl.Burgos.Claves.Main;
 import Cl.Burgos.Claves.Conf.Confi;
 import Cl.Burgos.Claves.FUN.Directorio;
 import Cl.Burgos.Claves.GUI.FrLogin;
+import java.awt.Color;
 import java.io.File;
+import javax.swing.JButton;
+import javax.swing.JFrame;
+import javax.swing.JPanel;
 import org.apache.log4j.PropertyConfigurator;
 
 /**
@@ -27,8 +31,6 @@ public class ApliClavesAllBD {
     
         Directorio.crearDirecPre();
         Directorio.crearDirecSec();
-        FrLogin frLogin = new FrLogin();
-        frLogin.setVisible(true);
-    }
-    
+        new FrLogin().setVisible(true);
+    } 
 }
