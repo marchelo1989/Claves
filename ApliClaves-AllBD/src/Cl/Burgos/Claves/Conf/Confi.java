@@ -65,8 +65,8 @@ public interface Confi {
         
     //Configuraciones para Update
     static String Version = "1.2";
-    static String UrlVersion = "";
-    static String UrlDescarga = "";
+    static String UrlVersion = "https://raw.githubusercontent.com/marchelo1989/Claves/master/ApliClaves-AllBD/Version.txt";
+    static String UrlDescarga = "https://github.com/marchelo1989/Claves/releases/download/v1.2/ApliClaves.exe";
     
     //Prueba Login
 //    String loginUsep="111111111";
