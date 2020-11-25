@@ -6,6 +6,7 @@
 package Cl.Burgos.Claves.FUN;
 
 import Cl.Burgos.Claves.Conf.Confi;
+import static Cl.Burgos.Claves.Conf.Confi.SO;
 import java.awt.Desktop;
 import java.io.File;
 import java.io.FileOutputStream;
@@ -84,10 +85,12 @@ public class Actualizacion {
             //dirección url del recurso a descargar
 //            String url = "https://github.com/marchelo1989/ActualizarAPP/releases/download/v1.0/UpdateAPP.jar";
             //nombre del archivo destino
-            String name = "UpdateAPP.jar";
+//            String name = "ApliClaves.exe";
+            String name = Confi.nameArchivo;
             
             //Directorio destino para las descargas
-            String folder = "descargas/";
+//            String folder = "Update/";
+            String folder = Confi.CarpetaUpdate;
             
             //Crea el directorio de destino en caso de que no exista
             File dir = new File(folder);
@@ -110,8 +113,8 @@ public class Actualizacion {
             System.out.println(">> Tamaño: " + conn.getContentLength() + " bytes");
             
             String datos="";
-            datos="\nempezando descarga: \n>> URL: " + url+"\n>> Nombre: "+ name+"\n>> Tamaño: " + conn.getContentLength() + " bytes";
-            
+            datos="\nArchivo Descargado: \n>> URL: " + url+"\n>> Nombre: "+ name+"\n>> Tamaño: " + conn.getContentLength() + " bytes";
+                        
             //Abrimos los Stream
             InputStream in = conn.getInputStream();
             OutputStream out = new FileOutputStream(file);
@@ -123,6 +126,7 @@ public class Actualizacion {
                 out.write(b);
             }
             JOptionPane.showMessageDialog(null, datos);
+            AbrirCarpeta();
             out.close();
             in.close();
         } catch (MalformedURLException e) {
@@ -131,5 +135,16 @@ public class Actualizacion {
           e.printStackTrace();
         }
         System.exit (0);
+    }
+    
+    public static void AbrirCarpeta() throws IOException{
+        if(SO.startsWith("Windows")){
+            File directorio = new File(Confi.CarpetaUpdate);
+            Desktop.getDesktop().open(directorio);
+        }else{
+            File directorio = new File(Confi.CarpetaUpdate);
+            Desktop.getDesktop().open(directorio);
+        }
+        
     }
 }
