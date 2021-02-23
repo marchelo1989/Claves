@@ -67,8 +67,8 @@ public interface Confi {
     static String nameArchivo = "ApliClaves.exe";
     static String CarpetaUpdate = "Update/";
     static String Version = "1.3";
-    static String UrlVersion = "https://raw.githubusercontent.com/marchelo1989/Claves/master/ApliClaves-AllBD/Version.txt";
-    static String UrlDescarga = "https://github.com/marchelo1989/Claves/releases/download/v1.3/ApliClaves.exe";
+    static String UrlVersion = "https://raw.githubusercontent.com/marchelo1989/Claves/master/Update/Version.txt";
+    static String UrlDescarga = "https://raw.githubusercontent.com/marchelo1989/Claves/master/Update/Descargas.txt";
     
     //Prueba Login
 //    String loginUsep="111111111";
