@@ -1,0 +1,4 @@
+Este programa funciona de forma interna por lo cual nada de la información sale fuera del internet y a su vez el programa no necesita internet para su funcionamiento 
+Esta versión contiene:
+Claves v1.5
+	Implementación del login con registro y recuperación de clave
